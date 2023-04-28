@@ -200,3 +200,16 @@ class CoRLRewards:
         reward = torch.sum(torch.square(err_raibert_heuristic), dim=(1, 2))
 
         return reward
+
+    def _reward_front_feet_height_tracking(self):
+        reference_heights = 0
+        FL_foot_height = (self.env.foot_positions[:, 0, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+        FR_foot_height = (self.env.foot_positions[:, 1, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+        random_index = torch.randint(self.env.num_envs, (self.env.num_envs, ))
+        left_feet_height = self.env.all_joint3d[random_index, 7, 2].unsqueeze(-1)
+        right_feet_height = self.env.all_joint3d[random_index, 8, 2].unsqueeze(-1)
+        FL_difference = torch.square(FL_foot_height - left_feet_height)
+        FR_difference = torch.square(FR_foot_height - right_feet_height)
+        return torch.sum(FL_difference, dim=1) + torch.sum(FR_difference, dim=1)
