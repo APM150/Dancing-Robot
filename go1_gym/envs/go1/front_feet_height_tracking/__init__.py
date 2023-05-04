@@ -8,6 +8,7 @@ from typing import Union
 
 from go1_gym.envs.base.legged_robot import LeggedRobot
 from go1_gym.envs.base.legged_robot_config import Cfg
+from go1_gym.envs.go1.front_feet_height_tracking.motion_tracking import MotionTracking
 
 
 class FrontFeetHeightTrackingEnv(LeggedRobot):
@@ -27,17 +28,29 @@ class FrontFeetHeightTrackingEnv(LeggedRobot):
             with open(file_name, 'rb') as f:
                 data = pkl.load(f)
             joint3d = data["full_pose"]
-            all_joint3d[i] = joint3d
             feet_idx = [7, 8]
             left_feet_heights = joint3d[:, feet_idx[0], 2]
             right_feet_heights = joint3d[:, feet_idx[1], 2]
-            # min_height = min(np.min(right_feet_heights), np.min(left_feet_heights))
-            # max_height = max(np.max(right_feet_heights), np.max(left_feet_heights))
-        all_joint3d = all_joint3d.reshape((-1, 24, 3))
+            min_height = min(np.min(right_feet_heights), np.min(left_feet_heights))
+            max_height = max(np.max(right_feet_heights), np.max(left_feet_heights))
+            # normalize to [0, 0.2]
+            joint3d[:, feet_idx[0], 2] = (left_feet_heights - min_height) / (max_height - min_height) * 0.2
+            joint3d[:, feet_idx[1], 2] = (right_feet_heights - min_height) / (max_height - min_height) * 0.2
+            all_joint3d[i] = joint3d
         self.all_joint3d = torch.from_numpy(all_joint3d).to(sim_device)
 
+        # motion tracking
+        self.motion_tracking = MotionTracking(self, self.all_joint3d)
+
     def step(self, actions):
+        # reset motion tracking
+        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()
+        self.motion_tracking.reset(env_ids)
+
         self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.reset_buf, self.extras = super().step(actions)
+
+        # update motion tracking
+        self.motion_tracking.update()
 
         self.foot_positions = self.rigid_body_state.view(self.num_envs, self.num_bodies, 13)[:, self.feet_indices,
                                0:3]
@@ -61,6 +74,7 @@ class FrontFeetHeightTrackingEnv(LeggedRobot):
         return self.obs_buf, self.rew_buf, self.reset_buf, self.extras
 
     def reset(self):
+        self.motion_tracking.reset(torch.arange(self.num_envs, device=self.device))
         self.reset_idx(torch.arange(self.num_envs, device=self.device))
         obs, _, _, _ = self.step(torch.zeros(self.num_envs, self.num_actions, device=self.device, requires_grad=False))
         return obs
@@ -82,4 +96,3 @@ if __name__ == '__main__':
         print(max_height)
         print(min_height)
     all_joint3d = all_joint3d.reshape((-1, 24, 3))
-    print(all_joint3d.shape)

@@ -215,7 +215,7 @@ def train_go1(headless=True):
     env = HistoryWrapper(env)
     gpu_id = 0
     runner = Runner(env, device=f"cuda:{gpu_id}")
-    runner.learn(num_learning_iterations=100000, init_at_random_ep_len=True, eval_freq=100)
+    runner.learn(num_learning_iterations=1000, init_at_random_ep_len=True, eval_freq=100)
 
 
 if __name__ == '__main__':
