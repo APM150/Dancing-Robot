@@ -35,6 +35,7 @@ class Cfg(PrefixProto, cli=False):
         num_recording_envs = 1
         debug_viz = False
         all_agents_share = False
+        observe_edge_targets = False
 
         priv_observe_friction = True
         priv_observe_friction_indep = True
@@ -152,6 +153,8 @@ class Cfg(PrefixProto, cli=False):
         limit_compliance = [0.0, 0.01]
         limit_stance_width = [0.0, 0.01]
         limit_stance_length = [0.0, 0.01]
+        limit_FL_height = [0.06, 0.061]
+        limit_FR_height = [0.06, 0.061]
 
         num_bins_vel_x = 25
         num_bins_vel_y = 3
@@ -170,6 +173,8 @@ class Cfg(PrefixProto, cli=False):
         num_bins_compliance = 1
         num_bins_stance_width = 1
         num_bins_stance_length = 1
+        num_bins_FL_height = 1
+        num_bins_RL_height = 1
 
         heading = [-3.14, 3.14]
 
@@ -185,6 +190,8 @@ class Cfg(PrefixProto, cli=False):
         compliance_range = [0.0, 0.01]
         stance_width_range = [0.0, 0.01]
         stance_length_range = [0.0, 0.01]
+        FL_height_range = [0.06, 0.061]
+        FR_height_range = [0.06, 0.061]
 
         exclusive_phase_offset = True
         binary_phases = False
@@ -374,6 +381,8 @@ class Cfg(PrefixProto, cli=False):
         segmentation_image = 1.0
         rgb_image = 1.0
         depth_image = 1.0
+        FL_height_cmd = 1.0
+        FR_height_cmd = 1.0
 
     class noise(PrefixProto, cli=False):
         add_noise = True

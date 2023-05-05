@@ -224,4 +224,56 @@ class CoRLRewards:
 
         rew_feet_clearance = torch.sum(FL_difference, dim=1) + torch.square(torch.sum(FR_foot_height, dim=1)) + \
                              torch.square(torch.sum(RL_foot_height, dim=1)) + torch.square(torch.sum(RR_foot_height, dim=1))
-        return -rew_feet_clearance
+        return rew_feet_clearance
+
+    def _reward_FL_foot_height_tracking(self):
+        # agent feet heights
+        reference_heights = 0
+        FL_foot_height = (self.env.foot_positions[:, 0, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+
+        # # tracking corresponding data height
+        # songID = self.env.motion_tracking.songID
+        # song_timestep = self.env.motion_tracking.song_timestep
+        # left_feet_height = self.env.all_joint3d[songID, song_timestep, 7, 2].unsqueeze(-1)
+        left_feet_height = self.env.commands[:,15].unsqueeze(-1)
+
+        FL_difference = torch.square(FL_foot_height - left_feet_height)
+
+        rew_feet_clearance = torch.sum(FL_difference, dim=1)
+        return rew_feet_clearance
+
+    def _reward_FR_foot_height_tracking(self):
+        # agent feet heights
+        reference_heights = 0
+        FR_foot_height = (self.env.foot_positions[:, 1, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+
+        # # tracking corresponding data height
+        # songID = self.env.motion_tracking.songID
+        # song_timestep = self.env.motion_tracking.song_timestep
+        # right_feet_height = self.env.all_joint3d[songID, song_timestep, 8, 2].unsqueeze(-1)
+        right_feet_height = self.env.commands[:,16].unsqueeze(-1)
+
+        FR_difference = torch.square(FR_foot_height - right_feet_height)
+
+        rew_feet_clearance = torch.sum(FR_difference, dim=1)
+        return rew_feet_clearance
+
+    def _reward_RL_foot_height_tracking(self):
+        # agent feet heights
+        reference_heights = 0
+        RL_foot_height = (self.env.foot_positions[:, 2, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+
+        rew_feet_clearance = torch.square(torch.sum(RL_foot_height, dim=1))
+        return rew_feet_clearance
+
+    def _reward_RR_foot_height_tracking(self):
+        # agent feet heights
+        reference_heights = 0
+        RR_foot_height = (self.env.foot_positions[:, 3, 2]).view(
+            self.env.num_envs, -1) - reference_heights
+
+        rew_feet_clearance = torch.square(torch.sum(RR_foot_height, dim=1))
+        return rew_feet_clearance

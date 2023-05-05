@@ -1,6 +1,7 @@
 playground.py
 
 runs
+custom_music
 # Jaynes secret files
 .secret*
 # ml_logger cache files

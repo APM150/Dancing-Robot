@@ -80,14 +80,16 @@ def train_go1(headless=True):
     Cfg.env.num_observation_history = 30
 
     Cfg.domain_rand.rand_interval_s = 4
-    Cfg.commands.num_commands = 15
+    Cfg.commands.num_commands = 17  # add two commands: FL_cmd and FR_cmd
     Cfg.env.observe_two_prev_actions = True
     Cfg.env.observe_yaw = False
-    Cfg.env.num_observations = 70
+    Cfg.env.num_observations = 72  # add two commands from 70
     Cfg.env.num_scalar_observations = 70
     Cfg.env.observe_gait_commands = True
     Cfg.env.observe_timing_parameter = False
     Cfg.env.observe_clock_inputs = True
+    Cfg.env.num_observation_history = 17
+    Cfg.env.observe_edge_targets = True
 
     Cfg.domain_rand.tile_height_range = [-0.0, 0.0]
     Cfg.domain_rand.tile_height_curriculum = False
@@ -140,10 +142,17 @@ def train_go1(headless=True):
     Cfg.rewards.kappa_gait_probs = 0.07
     Cfg.rewards.gait_force_sigma = 100.
     Cfg.rewards.gait_vel_sigma = 10.
-    Cfg.reward_scales.tracking_contacts_shaped_force = 4.0
-    Cfg.reward_scales.tracking_contacts_shaped_vel = 4.0
+    Cfg.reward_scales.tracking_contacts_shaped_force = 0.0  #4.0
+    Cfg.reward_scales.tracking_contacts_shaped_vel = 0.0    #4.0
     Cfg.reward_scales.collision = -5.0
-    Cfg.reward_scales.front_feet_height_tracking = -30.0
+    # Cfg.reward_scales.front_feet_height_tracking = -30.0
+    Cfg.reward_scales.FL_foot_height_tracking = -30.0
+    Cfg.reward_scales.FR_foot_height_tracking = -30.0
+    Cfg.reward_scales.RL_foot_height_tracking = -30.0
+    Cfg.reward_scales.RR_foot_height_tracking = -30.0
+
+    Cfg.obs_scales.FL_height_cmd = 1.0
+    Cfg.obs_scales.FR_height_cmd = 1.0
 
     Cfg.rewards.reward_container_name = "CoRLRewards"
     Cfg.rewards.only_positive_rewards = False
@@ -151,10 +160,9 @@ def train_go1(headless=True):
     Cfg.rewards.sigma_rew_neg = 0.02
 
 
-
-    Cfg.commands.lin_vel_x = [-1.0, 1.0]
-    Cfg.commands.lin_vel_y = [-0.6, 0.6]
-    Cfg.commands.ang_vel_yaw = [-1.0, 1.0]
+    Cfg.commands.lin_vel_x = [-0.0, 0.0]  #[-1.0, 1.0]
+    Cfg.commands.lin_vel_y = [-0.0, 0.0]  #[-0.6, 0.6]
+    Cfg.commands.ang_vel_yaw = [-0.0, 0.0]  #[-1.0, 1.0]
     Cfg.commands.body_height_cmd = [-0.25, 0.15]
     Cfg.commands.gait_frequency_cmd_range = [2.0, 4.0]
     Cfg.commands.gait_phase_cmd_range = [0.0, 1.0]
@@ -166,10 +174,12 @@ def train_go1(headless=True):
     Cfg.commands.body_roll_range = [-0.0, 0.0]
     Cfg.commands.stance_width_range = [0.10, 0.45]
     Cfg.commands.stance_length_range = [0.35, 0.45]
+    Cfg.commands.FL_height_range = [0.03, 0.35]
+    Cfg.commands.FR_height_range = [0.03, 0.35]
 
-    Cfg.commands.limit_vel_x = [-5.0, 5.0]
-    Cfg.commands.limit_vel_y = [-0.6, 0.6]
-    Cfg.commands.limit_vel_yaw = [-5.0, 5.0]
+    Cfg.commands.limit_vel_x = [-0.0, 0.0]  #[-5.0, 5.0]
+    Cfg.commands.limit_vel_y = [-0.0, 0.0]  #[-0.6, 0.6]
+    Cfg.commands.limit_vel_yaw = [-0.0, 0.0]  #[-5.0, 5.0]
     Cfg.commands.limit_body_height = [-0.25, 0.15]
     Cfg.commands.limit_gait_frequency = [2.0, 4.0]
     Cfg.commands.limit_gait_phase = [0.0, 1.0]
@@ -181,6 +191,8 @@ def train_go1(headless=True):
     Cfg.commands.limit_body_roll = [-0.0, 0.0]
     Cfg.commands.limit_stance_width = [0.10, 0.45]
     Cfg.commands.limit_stance_length = [0.35, 0.45]
+    Cfg.commands.limit_FL_height = [0.03, 0.35]
+    Cfg.commands.limit_FR_height = [0.03, 0.35]
 
     Cfg.commands.num_bins_vel_x = 21
     Cfg.commands.num_bins_vel_y = 1
@@ -195,6 +207,8 @@ def train_go1(headless=True):
     Cfg.commands.num_bins_body_roll = 1
     Cfg.commands.num_bins_body_pitch = 1
     Cfg.commands.num_bins_stance_width = 1
+    Cfg.commands.num_bins_FL_height = 1
+    Cfg.commands.num_bins_FR_height = 1
 
     Cfg.normalization.friction_range = [0, 1]
     Cfg.normalization.ground_friction_range = [0, 1]
