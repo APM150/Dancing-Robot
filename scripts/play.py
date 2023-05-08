@@ -39,6 +39,9 @@ def load_policy(logdir):
 def load_env(label, headless=False):
     dirs = glob.glob(f"../runs/{label}/*")
     logdir = sorted(dirs)[-1]
+    print("================================")
+    print(logdir)
+    print("================================")
 
     with open(logdir + "/parameters.pkl", 'rb') as file:
         pkl_cfg = pkl.load(file)
@@ -102,11 +105,11 @@ def play_go1(headless=True):
     import glob
     import os
 
-    label = "gait-conditioned-agility/2023-05-05/train_dance"
+    label = "gait-conditioned-agility/pretrain-v1_L2reward/train_dance"
 
     env, policy = load_env(label, headless=headless)
 
-    num_eval_steps = 900
+    num_eval_steps = 1500
     gaits = {"pronking": [0, 0, 0],
              "trotting": [0.5, 0, 0],
              "bounding": [0, 0.5, 0],
@@ -137,17 +140,24 @@ def play_go1(headless=True):
     max_height = max(np.max(right_feet_heights), np.max(left_feet_heights))
     FL_height = []
     FR_height = []
-    for i in range(num_eval_steps):
-        FL_height.append((left_feet_heights[i] - min_height) / (max_height - min_height) * 2.0)
-        FR_height.append((right_feet_heights[i] - min_height) / (max_height - min_height) * 2.0)
+    for i in range(900):
+        FL_height.append((left_feet_heights[i] - min_height) / (max_height - min_height) * 2)
+        FR_height.append((right_feet_heights[i] - min_height) / (max_height - min_height) * 2)
     print(np.array(FL_height).mean())
     print(np.array(FR_height).mean())
+    FL_height_agentFPS = []
+    FR_height_agentFPS = []
+    for i in range(num_eval_steps):
+        FL_height_agentFPS.append(FL_height[int(i/50*30)])
+        FR_height_agentFPS.append(FR_height[int(i/50*30)])
+    print(np.array(FL_height_agentFPS).mean())
+    print(np.array(FR_height_agentFPS).mean())
 
     frames = []
     measured_FL_height = np.zeros(num_eval_steps)
     measured_FR_height = np.zeros(num_eval_steps)
-    target_FL_height = np.array(FL_height)
-    target_FR_height = np.array(FR_height)
+    target_FL_height = np.array(FL_height_agentFPS)
+    target_FR_height = np.array(FR_height_agentFPS)
     joint_positions = np.zeros((num_eval_steps, 12))
     reward_FL = np.zeros(num_eval_steps)
     reward_FR = np.zeros(num_eval_steps)
@@ -170,8 +180,8 @@ def play_go1(headless=True):
         env.commands[:, 10] = pitch_cmd
         env.commands[:, 11] = roll_cmd
         env.commands[:, 12] = stance_width_cmd
-        env.commands[:, 15] = FL_height[i]
-        env.commands[:, 16] = FR_height[i]
+        env.commands[:, 15] = FL_height_agentFPS[i]
+        env.commands[:, 16] = FR_height_agentFPS[i]
         # print("play obs", obs['obs'][0, 18])
         # print("play cmd", env.commands[:, 15])
         # print("play FL", FL_height[i])
@@ -186,12 +196,12 @@ def play_go1(headless=True):
         joint_positions[i] = env.dof_pos[0, :].cpu()
         reward_FL[i] = env.reward_container._reward_FL_foot_height_tracking().cpu().numpy()[0]
         reward_FR[i] = env.reward_container._reward_FR_foot_height_tracking().cpu().numpy()[0]
-        difference_FL[i] = abs(measured_FL_height[i] - FL_height[i])
-        difference_FR[i] = abs(measured_FR_height[i] - FR_height[i])
+        difference_FL[i] = abs(measured_FL_height[i] - FL_height_agentFPS[i])
+        difference_FR[i] = abs(measured_FR_height[i] - FR_height_agentFPS[i])
 
 
     video_name = 'deploy.mp4'
-    fps = 30  # Set the frames per second value
+    fps = 50  # Set the frames per second value
     # Convert the frames to a video using OpenCV
     height, width, layers = frames[0].shape
     size = (width, height)
@@ -204,7 +214,7 @@ def play_go1(headless=True):
     fig, axs = plt.subplots(2, 1, figsize=(12, 5))
     axs[0].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), measured_FL_height, color='black', linestyle="-", label="Measured FL")
     axs[0].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), target_FL_height, color='black', linestyle="--", label="Desired FL")
-    axs[0].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), reward_FL, color='red', linestyle="--", label="Reward FL")
+    axs[0].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), -reward_FL, color='red', linestyle="--", label="Reward FL")
     axs[0].legend()
     axs[0].set_title("FL height")
     axs[0].set_xlabel("Time (s)")
@@ -212,7 +222,7 @@ def play_go1(headless=True):
 
     axs[1].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), measured_FR_height, color='black', linestyle="-", label="Measured FR")
     axs[1].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), target_FR_height, color='black', linestyle="--", label="Desired FR")
-    axs[1].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), reward_FR, color='red', linestyle="--", label="Reward FR")
+    axs[1].plot(np.linspace(0, num_eval_steps * env.dt, num_eval_steps), -reward_FR, color='red', linestyle="--", label="Reward FR")
     axs[1].legend()
     axs[1].set_title("FL height")
     axs[1].set_xlabel("Time (s)")

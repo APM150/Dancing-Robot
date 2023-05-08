@@ -1,6 +1,5 @@
 playground.py
 
-runs
 custom_music
 # Jaynes secret files
 .secret*
@@ -60,7 +59,6 @@ Thumbs.db
 .vscode
 # logs
 logs
-runs
 
 # other
 *.egg-info

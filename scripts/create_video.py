@@ -20,7 +20,7 @@ def combine_audio_video(video_file, audio_file, output_file):
     video_with_audio.write_videofile(output_file, codec='libx264', audio_codec='aac')
 
 # Usage example
-video_file = '../runs/gait-conditioned-agility/2023-05-05/train_dance/045109.997099/videos/deploy.mp4'
+video_file = '../runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/videos/deploy.mp4'
 audio_file = '../custom_music/9i6bCWIdhBw.wav'
-output_file = '../runs/gait-conditioned-agility/2023-05-05/train_dance/045109.997099/videos/deploy_final.mp4'
+output_file = '../runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/videos/deploy_final.mp4'
 combine_audio_video(video_file, audio_file, output_file)

@@ -35,8 +35,8 @@ class FrontFeetHeightTrackingEnv(LeggedRobot):
             min_height = min(np.min(right_feet_heights), np.min(left_feet_heights))
             max_height = max(np.max(right_feet_heights), np.max(left_feet_heights))
             # normalize to [0, 0.2]
-            joint3d[:, feet_idx[0], 2] = (left_feet_heights - min_height) / (max_height - min_height) * 2.0
-            joint3d[:, feet_idx[1], 2] = (right_feet_heights - min_height) / (max_height - min_height) * 2.0
+            joint3d[:, feet_idx[0], 2] = (left_feet_heights - min_height) / (max_height - min_height) * 0.2
+            joint3d[:, feet_idx[1], 2] = (right_feet_heights - min_height) / (max_height - min_height) * 0.2
             all_joint3d[i] = joint3d
         self.all_joint3d = torch.from_numpy(all_joint3d).to(sim_device)
 
