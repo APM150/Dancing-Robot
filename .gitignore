@@ -1,5 +1,15 @@
 playground.py
-runs/
+runs/gait-conditioned-agility/pretrain-v0
+runs/gait-conditioned-agility/pretrain-v1_L0reward
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-02
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/checkpoints/ac_weights_000000.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/checkpoints/ac_weights_000400.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/checkpoints/ac_weights_000800.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2/checkpoints/ac_weights_000999.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-1/checkpoints/ac_weights_000000.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-1/checkpoints/ac_weights_000400.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-1/checkpoints/ac_weights_000800.pt
+runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-1/checkpoints/ac_weights_000999.pt
 
 custom_music
 # Jaynes secret files
@@ -67,6 +77,6 @@ __pycache__
 
 docker/rsc
 *.swp
-*.jit
+#*.jit
 tmp
 *.tar
