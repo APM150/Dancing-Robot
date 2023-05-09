@@ -235,8 +235,8 @@ class CoRLRewards:
         # humanoid left feet height from EDGE
         left_feet_height = self.env.commands[:,15].unsqueeze(-1)
 
-        FL_difference = torch.square(FL_foot_height - left_feet_height)
-        # FL_difference = torch.exp(-1/torch.abs(100 * (FL_foot_height - left_feet_height)))
+        # FL_difference = torch.square(FL_foot_height - left_feet_height)
+        FL_difference = torch.exp(-torch.abs(10 * (FL_foot_height - left_feet_height))) - 1
 
         rew_feet_clearance = torch.sum(FL_difference, dim=1)
         return rew_feet_clearance
@@ -250,8 +250,8 @@ class CoRLRewards:
         # humanoid right feet height from EDGE
         right_feet_height = self.env.commands[:,16].unsqueeze(-1)
 
-        FR_difference = torch.square(FR_foot_height - right_feet_height)
-        # FR_difference = torch.exp(-1/torch.abs(100 * (FR_foot_height - right_feet_height)))
+        # FR_difference = torch.square(FR_foot_height - right_feet_height)
+        FR_difference = torch.exp(-torch.abs(10 * (FR_foot_height - right_feet_height))) - 1
 
         rew_feet_clearance = torch.sum(FR_difference, dim=1)
         return rew_feet_clearance

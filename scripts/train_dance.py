@@ -146,8 +146,8 @@ def train_go1(headless=True):
     Cfg.reward_scales.tracking_contacts_shaped_vel = 0.0    #4.0
     Cfg.reward_scales.collision = -5.0
     # Cfg.reward_scales.front_feet_height_tracking = -30.0
-    Cfg.reward_scales.FL_foot_height_tracking = -30.0
-    Cfg.reward_scales.FR_foot_height_tracking = -30.0
+    Cfg.reward_scales.FL_foot_height_tracking = 1.0
+    Cfg.reward_scales.FR_foot_height_tracking = 1.0
     Cfg.reward_scales.RL_foot_height_tracking = -30.0
     Cfg.reward_scales.RR_foot_height_tracking = -30.0
 

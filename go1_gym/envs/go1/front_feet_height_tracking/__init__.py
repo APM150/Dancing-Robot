@@ -521,8 +521,16 @@ if __name__ == '__main__':
         min_height = min(np.min(right_feet_heights), np.min(left_feet_heights))
         max_height = max(np.max(right_feet_heights), np.max(left_feet_heights))
         # normalize to [0, 0.2]
-        joint3d[:, feet_idx[0], 2] = (left_feet_heights - min_height) / (max_height - min_height) * 0.2
-        joint3d[:, feet_idx[1], 2] = (right_feet_heights - min_height) / (max_height - min_height) * 0.2
+        joint3d[:, feet_idx[0], 2] = (left_feet_heights - min_height) / (max_height - min_height) * 2.0
+        joint3d[:, feet_idx[1], 2] = (right_feet_heights - min_height) / (max_height - min_height) * 2.0
         all_joint3d[i] = joint3d
     all_joint3d = torch.from_numpy(all_joint3d)
-    print(all_joint3d)
+    print(all_joint3d[:, :, 7, 2].mean())
+    print(all_joint3d[:, :, 8, 2].mean())
+    import matplotlib.pyplot as plt
+    plt.scatter(all_joint3d[:, :, 7, 2].view(-1), all_joint3d[:, :, 8, 2].view(-1))
+    plt.scatter(all_joint3d[:, :, 7, 2].mean(), all_joint3d[:, :, 8, 2].mean())
+    plt.xlabel("left height")
+    plt.ylabel("right height")
+    plt.title("EDGE data normalized 0-2")
+    plt.savefig("data_visualization_0-2")

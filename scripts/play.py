@@ -105,7 +105,8 @@ def play_go1(headless=True):
     import glob
     import os
 
-    label = "gait-conditioned-agility/pretrain-v1_L2reward/train_dance"
+    #label = "gait-conditioned-agility/pretrain-v1_L2reward/train_dance"
+    label = "gait-conditioned-agility/2023-05-09/train_dance"
 
     env, policy = load_env(label, headless=headless)
 
@@ -141,8 +142,8 @@ def play_go1(headless=True):
     FL_height = []
     FR_height = []
     for i in range(900):
-        FL_height.append((left_feet_heights[i] - min_height) / (max_height - min_height) * 2)
-        FR_height.append((right_feet_heights[i] - min_height) / (max_height - min_height) * 2)
+        FL_height.append((left_feet_heights[i] - min_height) / (max_height - min_height) * 0.2)
+        FR_height.append((right_feet_heights[i] - min_height) / (max_height - min_height) * 0.2)
     print(np.array(FL_height).mean())
     print(np.array(FR_height).mean())
     FL_height_agentFPS = []
