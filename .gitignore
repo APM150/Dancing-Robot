@@ -16,6 +16,7 @@ runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2.5/checkpo
 runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2.5/checkpoints/ac_weights_000800.pt
 runs/gait-conditioned-agility/pretrain-v1_L2reward/train_dance/data0-2.5/checkpoints/ac_weights_000999.pt
 
+30s_samples_normalized
 custom_music
 # Jaynes secret files
 .secret*
